@@ -75,8 +75,8 @@ class PlanSubscription extends Model
      * {@inheritdoc}
      */
     protected $fillable = [
-        'user_id',
-        'user_type',
+        'client_id',
+        'client_type',
         'plan_id',
         'slug',
         'name',
@@ -92,8 +92,8 @@ class PlanSubscription extends Model
      * {@inheritdoc}
      */
     protected $casts = [
-        'user_id' => 'integer',
-        'user_type' => 'string',
+        'client_id' => 'integer',
+        'client_type' => 'string',
         'plan_id' => 'integer',
         'slug' => 'string',
         'trial_ends_at' => 'datetime',
@@ -152,8 +152,8 @@ class PlanSubscription extends Model
             'description' => 'nullable|string|max:10000',
             'slug' => 'required|alpha_dash|max:150|unique:'.config('rinvex.subscriptions.tables.plan_subscriptions').',slug',
             'plan_id' => 'required|integer|exists:'.config('rinvex.subscriptions.tables.plans').',id',
-            'user_id' => 'required|integer',
-            'user_type' => 'required|string',
+            'client_id' => 'required|integer',
+            'client_type' => 'required|string',
             'trial_ends_at' => 'nullable|date',
             'starts_at' => 'required|date',
             'ends_at' => 'required|date',
@@ -196,7 +196,7 @@ class PlanSubscription extends Model
      */
     public function user(): MorphTo
     {
-        return $this->morphTo('user', 'user_type', 'user_id');
+        return $this->morphTo('client', 'client_type', 'client_id');
     }
 
     /**
@@ -342,7 +342,7 @@ class PlanSubscription extends Model
      */
     public function scopeOfUser(Builder $builder, Model $user): Builder
     {
-        return $builder->where('user_type', $user->getMorphClass())->where('user_id', $user->getKey());
+        return $builder->where('client_type', $user->getMorphClass())->where('client_id', $user->getKey());
     }
 
     /**
